@@ -1,24 +1,23 @@
 import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { Row, Col } from 'react-bootstrap'
 import Product from '../components/Product'
-import Collection from '../components/Collection'
-import axios from 'axios'
+import { listCollectionDetails } from '../actions/collection.actions'
+
 
 function CollectionPage({ match }) {
-    const [collection, setCollection] = useState([])
-    const [collectionProducts, setCollectionProducts] = useState([])
+    const dispatch = useDispatch()
+    const collectionDetails = useSelector(state => state.collectionDetails)
+    const { loading, error, collection } = collectionDetails
 
     useEffect(() => {
-        async function fetchCollection() {
-            const { data } = await axios.get(`/api/collections/${match.params.id}`)
-            setCollection(data)
-            setCollectionProducts(data['products'])
-        }
-        fetchCollection()
-    }, [])
+        dispatch(listCollectionDetails(match.params.id))
+    }, [dispatch, match])
 
     return (
         <div>
+            <h1>{collection.name}</h1>
+            {/*
             <Row>
                 {collectionProducts.map(product => (
                     <Col key={product._id} sm={12} md={6} lg={4} xL={3}>
@@ -26,6 +25,7 @@ function CollectionPage({ match }) {
                     </Col>
                 ))}
             </Row>
+            */}
         </div>
     )
 }

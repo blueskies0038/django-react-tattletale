@@ -1,28 +1,33 @@
 import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { Row, Col } from 'react-bootstrap'
 import Collection from '../components/Collection'
-import axios from 'axios'
+import Loader from '../components/Loader'
+import Message from '../components/Message'
+import { listCollections } from '../actions/collection.actions'
+
 
 function AllCollectionsPage() {
-    const [collections, setCollections] = useState([])
+    const dispatch = useDispatch()
+    const collectionList = useSelector(state => state.collectionList)
+    const { error, loading, collections } = collectionList
 
     useEffect(() => {
-        async function fetchCollections() {
-            const { data } = await axios.get('/api/collections/')
-            setCollections(data)
-        }
-        fetchCollections()
-    }, [])
+        dispatch(listCollections())
+    }, [dispatch])
 
     return (
         <div>
-            <Row>
-                {collections.map(collection => (
-                    <Col key={collection._id} sm={12} md={6}>
-                        <Collection collection={collection} />
-                    </Col>
-                ))}
-            </Row>
+            {loading ?
+                <Loader /> : error ? <Message variant="danger">{error}</Message> : 
+                <Row>
+                    {collections.map(collection => (
+                        <Col key={collection._id} sm={12} md={6}>
+                            <Collection collection={collection} />
+                        </Col>
+                    ))}
+                </Row>
+            }
         </div>
     )
 }
