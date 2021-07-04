@@ -20,14 +20,15 @@ function CollectionPage({ match }) {
     return (
         <div>
             {loading ?
-                <Loader /> : error ? <Message variant="danger">{error}</Message> : 
+                <Loader /> : error ? <Message variant="danger">{error}</Message> : collection.products ?  
                 <Row>
-                    {collection.product.map(product => (
+                    {collection.products.map(product => (
                         <Col key={product._id} sm={12} md={6}>
                             <Product product={product} />
                         </Col>
                     ))}
                 </Row>
+                : <></>
             }
         </div>
     )
